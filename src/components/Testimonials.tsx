@@ -1,21 +1,22 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const testimonials = [
   {
-    quote: "My spiritual journey took a profound turn after working with Divine Synergy. The energy healing sessions unlocked aspects of myself I never knew existed.",
-    author: "Rebecca A.",
-    role: "Spiritual Seeker"
+    quote: "Dr. Kesawarni's homeopathic treatment helped me overcome my chronic migraines when nothing else worked. Her approach is thorough and she really listens to understand the root cause.",
+    author: "Priya M.",
+    role: "Patient"
   },
   {
-    quote: "The meditation journeys have given me tools to navigate life's challenges with grace and ease. I feel more connected to my higher self than ever before.",
-    author: "Michael T.",
-    role: "Life Coach"
+    quote: "After years of digestive issues, the homeopathic remedies prescribed by Dr. Kesawarni have significantly improved my quality of life. I appreciate her holistic approach to healthcare.",
+    author: "Rahul S.",
+    role: "Patient"
   },
   {
-    quote: "The Akashic Records reading was incredibly accurate and provided the clarity I needed during a difficult transition. I'm forever grateful.",
-    author: "Sarah L.",
-    role: "Wellness Practitioner"
+    quote: "My daughter's eczema improved dramatically under Dr. Kesawarni's care. We're grateful to have found a gentle, effective treatment without harsh steroids or side effects.",
+    author: "Anjali P.",
+    role: "Parent of Patient"
   }
 ];
 
@@ -23,9 +24,9 @@ const Testimonials = () => {
   return (
     <section id="testimonials" className="py-20 bg-gradient-to-b from-white to-divine-purple-light/20">
       <div className="divine-container">
-        <h2 className="section-title text-center opacity-0 animate-fade-in">Divine Reflections</h2>
+        <h2 className="section-title text-center opacity-0 animate-fade-in">Patient Testimonials</h2>
         <p className="section-subtitle text-center opacity-0 animate-fade-in delay-100">
-          Read about the transformative experiences of those who have embarked on their spiritual journey with us
+          Read about the healing experiences of those who have benefited from our homeopathic treatments
         </p>
         
         <div className="grid md:grid-cols-3 gap-8 mt-16">
@@ -53,11 +54,11 @@ const Testimonials = () => {
         
         <div className="mt-16 text-center bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg max-w-3xl mx-auto opacity-0 animate-fade-in delay-500">
           <p className="text-xl md:text-2xl font-serif text-divine-purple mb-6">
-            Ready to begin your own transformative journey?
+            Ready to begin your healing journey?
           </p>
-          <a href="#contact" className="divine-button-primary inline-block">
-            Connect With Us
-          </a>
+          <Link to="/appointment" className="divine-button-primary inline-block">
+            Book Your Consultation
+          </Link>
         </div>
       </div>
     </section>

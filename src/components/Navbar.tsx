@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const Navbar = () => {
@@ -21,11 +22,10 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'Home', href: '/' },
+    { name: 'About', href: '/about' },
+    { name: 'Services', href: '/services' },
+    { name: 'Contact', href: '/contact' }
   ];
 
   return (
@@ -34,26 +34,27 @@ const Navbar = () => {
       isScrolled ? 'bg-white/90 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'
     )}>
       <div className="container mx-auto flex justify-between items-center px-6">
-        <a href="#home" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <h1 className="text-2xl md:text-3xl font-serif font-bold">
-            <span className="divine-gradient-text">Divine</span> Synergy
+            <span className="divine-gradient-text">Synergy</span> The Divine Clinic
           </h1>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
+              to={link.href}
               className="text-divine-purple-dark hover:text-divine-purple transition-colors font-medium"
             >
               {link.name}
-            </a>
+            </Link>
           ))}
-          <a href="#contact" className="divine-button-primary">
-            Connect Now
-          </a>
+          <Link to="/appointment" className="divine-button-primary flex items-center gap-2">
+            <Calendar size={18} />
+            Book Appointment
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -70,22 +71,23 @@ const Navbar = () => {
         <div className="md:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg py-5 px-6 animate-fade-in">
           <div className="flex flex-col space-y-4">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
                 className="text-divine-purple-dark hover:text-divine-purple transition-colors font-medium py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
-            <a 
-              href="#contact" 
-              className="divine-button-primary text-center"
+            <Link 
+              to="/appointment" 
+              className="divine-button-primary text-center flex items-center justify-center gap-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              Connect Now
-            </a>
+              <Calendar size={18} />
+              Book Appointment
+            </Link>
           </div>
         </div>
       )}

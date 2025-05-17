@@ -1,45 +1,46 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const serviceItems = [
   {
-    title: "Energy Healing",
-    description: "Restore balance and remove blockages through powerful energy work that harmonizes your subtle body systems",
+    title: "Homeopathic Consultation",
+    description: "Comprehensive assessment and individualized homeopathic remedies tailored to your unique health profile",
     icon: "✧",
     color: "bg-divine-purple-light",
     iconColor: "text-divine-purple"
   },
   {
-    title: "Spiritual Coaching",
-    description: "Receive personalized guidance to navigate your unique spiritual path and overcome obstacles with grace",
+    title: "Chronic Disease Management",
+    description: "Long-term holistic care for chronic conditions, focusing on improving quality of life and reducing dependence on conventional medications",
     icon: "✦",
     color: "bg-divine-gold-light",
     iconColor: "text-divine-gold"
   },
   {
-    title: "Meditation Journeys",
-    description: "Experience guided meditations that elevate consciousness and connect you with higher dimensions of being",
+    title: "Pediatric Homeopathy",
+    description: "Gentle, effective treatments for children's health issues without the side effects of conventional medicine",
     icon: "✧",
     color: "bg-divine-purple-light",
     iconColor: "text-divine-purple"
   },
   {
-    title: "Sacred Ceremonies",
-    description: "Participate in transformative rituals that mark important transitions and invite divine presence",
+    title: "Women's Health",
+    description: "Specialized care for women's health concerns including hormonal imbalances, reproductive health, and pregnancy support",
     icon: "✦",
     color: "bg-divine-gold-light",
     iconColor: "text-divine-gold"
   },
   {
-    title: "Akashic Records",
-    description: "Access your soul's library of information for profound healing and personal growth insights",
+    title: "Lifestyle Counseling",
+    description: "Guidance on nutrition, exercise, stress management, and other lifestyle factors that impact your overall health and wellbeing",
     icon: "✧",
     color: "bg-divine-purple-light",
     iconColor: "text-divine-purple"
   },
   {
-    title: "Divine Integration",
-    description: "Learn practical tools to integrate spiritual awakening into daily life and relationships",
+    title: "Preventative Care",
+    description: "Strengthening your body's natural defenses and maintaining optimal health to prevent future illnesses",
     icon: "✦",
     color: "bg-divine-gold-light",
     iconColor: "text-divine-gold"
@@ -50,9 +51,9 @@ const Services = () => {
   return (
     <section id="services" className="py-20 bg-gradient-to-b from-divine-cream/50 to-white">
       <div className="divine-container">
-        <h2 className="section-title text-center opacity-0 animate-fade-in">Divine Offerings</h2>
+        <h2 className="section-title text-center opacity-0 animate-fade-in">Our Services</h2>
         <p className="section-subtitle text-center opacity-0 animate-fade-in delay-100">
-          Explore our transformative services designed to awaken your highest potential and bring harmony to your life
+          Discover our range of homeopathic treatments and holistic healing approaches
         </p>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
@@ -67,17 +68,17 @@ const Services = () => {
               </div>
               <h3 className="text-2xl font-serif font-bold mb-3 text-divine-purple">{service.title}</h3>
               <p className="text-divine-purple-dark">{service.description}</p>
-              <a href="#contact" className="inline-block mt-4 text-divine-purple font-medium hover:text-divine-gold transition-colors">
+              <Link to="/services" className="inline-block mt-4 text-divine-purple font-medium hover:text-divine-gold transition-colors">
                 Learn more →
-              </a>
+              </Link>
             </div>
           ))}
         </div>
         
         <div className="mt-16 text-center opacity-0 animate-fade-in delay-500">
-          <a href="#contact" className="divine-button-primary inline-block">
-            Schedule Your Divine Experience
-          </a>
+          <Link to="/appointment" className="divine-button-primary inline-block">
+            Schedule Your Consultation
+          </Link>
         </div>
       </div>
     </section>
