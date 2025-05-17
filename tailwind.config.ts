@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				divine: {
+					'purple': '#8B5CF6',
+					'purple-light': '#C4B5FD',
+					'purple-dark': '#6E59A5',
+					'gold': '#D4AF37',
+					'gold-light': '#F9EBBE',
+					'cream': '#FEF7CD',
 				}
 			},
 			borderRadius: {
@@ -84,11 +93,30 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.7s ease-out forwards',
+				'float': 'float 3s ease-in-out infinite'
+			},
+			fontFamily: {
+				'serif': ['Playfair Display', 'serif'],
+				'sans': ['Poppins', 'sans-serif'],
+			},
+			backgroundImage: {
+				'gradient-divine': 'linear-gradient(135deg, #8B5CF6 0%, #D4AF37 100%)',
+				'gradient-purple': 'linear-gradient(135deg, #C4B5FD 0%, #8B5CF6 100%)',
+				'gradient-gold': 'linear-gradient(135deg, #F9EBBE 0%, #D4AF37 100%)',
 			}
 		}
 	},
