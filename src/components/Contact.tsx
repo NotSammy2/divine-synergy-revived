@@ -10,6 +10,7 @@ const Contact = () => {
     service: '',
     message: ''
   });
+  const [sending, setSending] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -19,21 +20,62 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would normally send the data to your backend
-    toast({
-      title: "Message Received",
-      description: "Thank you for reaching out. We'll connect with you soon on your spiritual journey.",
-    });
+    setSending(true);
     
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      service: '',
-      message: ''
-    });
+    try {
+      // Here you would normally send the data to your backend
+      await simulateSendEmail({
+        to: "drsusmit@synergythedivine.com", // Replace with your actual email
+        subject: `New Contact Message from ${formData.name}`,
+        body: `
+          New message from your website contact form:
+          
+          Name: ${formData.name}
+          Email: ${formData.email}
+          Service Interest: ${formData.service}
+          
+          Message:
+          ${formData.message}
+        `
+      });
+      
+      toast({
+        title: "Message Received",
+        description: "Thank you for reaching out. We'll connect with you soon on your spiritual journey.",
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        service: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error("Error sending contact form:", error);
+      toast({
+        title: "Message Send Failed",
+        description: "There was an issue sending your message. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setSending(false);
+    }
+  };
+  
+  // This function simulates sending an email
+  const simulateSendEmail = async ({ to, subject, body }: { to: string; subject: string; body: string }) => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    console.log("Email would be sent to:", to);
+    console.log("Subject:", subject);
+    console.log("Body:", body);
+    
+    // In a real implementation, you would make an API call to your backend here
+    // For now just return success
+    return { success: true };
   };
 
   return (
@@ -112,8 +154,20 @@ const Contact = () => {
                   ></textarea>
                 </div>
                 
-                <button type="submit" className="divine-button-primary w-full">
-                  Send Message
+                <button 
+                  type="submit" 
+                  className="divine-button-primary w-full flex items-center justify-center" 
+                  disabled={sending}
+                >
+                  {sending ? (
+                    <>
+                      <span className="mr-2">Sending...</span>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </>
+                  ) : "Send Message"}
                 </button>
               </form>
             </div>
