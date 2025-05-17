@@ -29,7 +29,7 @@ const Services = () => {
     {
       id: 'homeopathic-consultation',
       title: 'Homeopathic Consultation',
-      description: 'Our comprehensive homeopathic consultations involve a detailed assessment of your physical, mental, and emotional health. Dr. Kesawarni takes the time to understand your unique constitution and health concerns before prescribing individualized homeopathic remedies that stimulate your body's natural healing response.',
+      description: 'Our comprehensive homeopathic consultations involve a detailed assessment of your physical, mental, and emotional health. Dr. Kesawarni takes the time to understand your unique constitution and health concerns before prescribing individualized homeopathic remedies that stimulate your body\'s natural healing response.',
       image: 'https://images.unsplash.com/photo-1576671414121-aa0c81c869e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
       details: [
         'Initial consultation (60-90 minutes)',
