@@ -5,36 +5,36 @@ const HolisticHealingSection = () => {
   return (
     <section className="py-16 bg-gradient-to-b from-white to-divine-cream/30">
       <div className="divine-container">
-        <h2 className="section-title text-center opacity-0 animate-fade-in">Understanding Holistic Healing</h2>
+        <h2 className="section-title text-center opacity-0 animate-fade-in hover:scale-105 transition-transform duration-300">Understanding Modern Homeopathy</h2>
         
         <div className="grid md:grid-cols-3 gap-8 mt-16">
-          <div className="divine-card opacity-0 animate-fade-in delay-100">
+          <div className="divine-card opacity-0 animate-fade-in delay-100 hover:scale-105 hover:shadow-xl transition-all duration-300">
             <div className="w-16 h-16 bg-divine-purple-light rounded-full flex items-center justify-center mb-4">
-              <span className="text-divine-purple text-2xl">✧</span>
+              <span className="text-divine-purple text-2xl">⚕</span>
             </div>
-            <h3 className="text-2xl font-serif font-bold mb-4 text-divine-purple">Holistic Approach</h3>
+            <h3 className="text-2xl font-serif font-bold mb-4 text-divine-purple">Evidence-Based Approach</h3>
             <p className="text-divine-purple-dark">
-              Our homeopathic treatments consider your entire being—physical, mental, emotional, and spiritual aspects—to create a truly personalized healing plan that addresses the root cause of your health concerns.
+              Our homeopathic treatments are based on scientific research and clinical evidence, ensuring effective and safe therapeutic outcomes for our patients.
             </p>
           </div>
           
-          <div className="divine-card opacity-0 animate-fade-in delay-200">
+          <div className="divine-card opacity-0 animate-fade-in delay-200 hover:scale-105 hover:shadow-xl transition-all duration-300">
             <div className="w-16 h-16 bg-divine-gold-light rounded-full flex items-center justify-center mb-4">
-              <span className="text-divine-gold text-2xl">✦</span>
+              <span className="text-divine-gold text-2xl">🔬</span>
             </div>
-            <h3 className="text-2xl font-serif font-bold mb-4 text-divine-purple">Natural Healing</h3>
+            <h3 className="text-2xl font-serif font-bold mb-4 text-divine-purple">Scientific Methods</h3>
             <p className="text-divine-purple-dark">
-              Homeopathic remedies work with your body's natural healing mechanisms, stimulating your innate ability to restore balance and health without the side effects often associated with conventional medications.
+              We combine traditional homeopathic principles with modern diagnostic tools and scientific validation to provide comprehensive healthcare solutions.
             </p>
           </div>
           
-          <div className="divine-card opacity-0 animate-fade-in delay-300">
+          <div className="divine-card opacity-0 animate-fade-in delay-300 hover:scale-105 hover:shadow-xl transition-all duration-300">
             <div className="w-16 h-16 bg-divine-purple-light rounded-full flex items-center justify-center mb-4">
-              <span className="text-divine-purple text-2xl">✧</span>
+              <span className="text-divine-purple text-2xl">💊</span>
             </div>
-            <h3 className="text-2xl font-serif font-bold mb-4 text-divine-purple">Personalized Care</h3>
+            <h3 className="text-2xl font-serif font-bold mb-4 text-divine-purple">Individualized Treatment</h3>
             <p className="text-divine-purple-dark">
-              Every patient receives individualized attention and care, with treatments tailored to your unique constitution, health history, and specific symptoms—because no two people are exactly alike, even with similar conditions.
+              Every patient receives a personalized treatment plan based on detailed case analysis, constitutional assessment, and evidence-based remedy selection.
             </p>
           </div>
         </div>
