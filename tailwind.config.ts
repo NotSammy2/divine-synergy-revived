@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -64,12 +63,12 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				divine: {
-					'purple': '#8B5CF6',
-					'purple-light': '#C4B5FD',
-					'purple-dark': '#6E59A5',
-					'gold': '#D4AF37',
-					'gold-light': '#F9EBBE',
-					'cream': '#FEF7CD',
+					'purple': '#8B5A6B',
+					'purple-light': '#C4A5B0',
+					'purple-dark': '#6E4C57',
+					'gold': '#B8860B',
+					'gold-light': '#DDD1A0',
+					'cream': '#F5F2E8',
 				}
 			},
 			borderRadius: {
@@ -114,9 +113,9 @@ export default {
 				'sans': ['Poppins', 'sans-serif'],
 			},
 			backgroundImage: {
-				'gradient-divine': 'linear-gradient(135deg, #8B5CF6 0%, #D4AF37 100%)',
-				'gradient-purple': 'linear-gradient(135deg, #C4B5FD 0%, #8B5CF6 100%)',
-				'gradient-gold': 'linear-gradient(135deg, #F9EBBE 0%, #D4AF37 100%)',
+				'gradient-divine': 'linear-gradient(135deg, #8B5A6B 0%, #B8860B 100%)',
+				'gradient-purple': 'linear-gradient(135deg, #C4A5B0 0%, #8B5A6B 100%)',
+				'gradient-gold': 'linear-gradient(135deg, #DDD1A0 0%, #B8860B 100%)',
 			}
 		}
 	},

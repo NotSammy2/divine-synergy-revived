@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -117,7 +116,7 @@ const About = () => {
               
               <div className="grid grid-cols-2 gap-4 mt-8">
                 <div className="flex items-center p-3 bg-divine-purple-light/20 rounded-lg hover:scale-105 transition-transform duration-200">
-                  <span className="font-bold mr-2">Education:</span> MBBS, MD
+                  <span className="font-bold mr-2">Education:</span> BHMS
                 </div>
                 <div className="flex items-center p-3 bg-divine-purple-light/20 rounded-lg hover:scale-105 transition-transform duration-200">
                   <span className="font-bold mr-2">Experience:</span> 19+ Years
