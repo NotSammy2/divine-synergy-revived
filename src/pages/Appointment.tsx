@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -7,60 +6,47 @@ import { format } from 'date-fns';
 import AppointmentForm from '@/components/appointment/AppointmentForm';
 import AppointmentSidebar from '@/components/appointment/AppointmentSidebar';
 import HolisticHealingSection from '@/components/appointment/HolisticHealingSection';
-import { simulateSendEmail } from '@/components/appointment/EmailService';
+import { sendAppointmentEmail } from '@/components/appointment/EmailService';
 
 const Appointment = () => {
   const { toast } = useToast();
   const [sendingEmail, setSendingEmail] = useState(false);
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    console.log('Appointment data:', data);
     
-    // If the send copy to doctor checkbox is checked, send an email
-    if (data.sendCopyToDoctor) {
-      setSendingEmail(true);
-      try {
-        // This would typically be sent to a backend API
-        await simulateSendEmail({
-          to: "drsusmit@synergythedivine.com", // Replace with the doctor's actual email
-          subject: `New Appointment: ${data.name} - ${data.service}`,
-          body: `
-            New appointment booking details:
-            
-            Patient: ${data.name}
-            Contact: ${data.email} / ${data.phone}
-            Service: ${data.service}
-            Date: ${data.date ? format(data.date, "PPP") : "Not selected"}
-            Time: ${data.time}
-            
-            Additional Notes:
-            ${data.notes || "None provided"}
-          `
-        });
-        
-        toast({
-          title: "Email Notification Sent",
-          description: "A copy of this appointment has been sent to the doctor.",
-        });
-      } catch (error) {
-        console.error("Error sending email notification:", error);
-        toast({
-          title: "Email Notification Failed",
-          description: "Could not send the appointment copy. The booking is still received.",
-          variant: "destructive",
-        });
-      } finally {
-        setSendingEmail(false);
-      }
+    setSendingEmail(true);
+    
+    try {
+      // Send appointment confirmation email to patient
+      const appointmentData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        date: data.date ? format(data.date, "PPP") : "Not selected",
+        time: data.time,
+        service: data.service,
+        notes: data.notes
+      };
+
+      await sendAppointmentEmail(appointmentData);
+      
+      toast({
+        title: "Appointment Request Confirmed!",
+        description: "A confirmation email has been sent to you. We'll contact you shortly to finalize your appointment.",
+      });
+      
+      // Reset form would be handled in the AppointmentForm component
+    } catch (error) {
+      console.error("Error sending appointment email:", error);
+      toast({
+        title: "Appointment Received",
+        description: "Your appointment request has been received. We'll contact you shortly via phone.",
+        variant: "default",
+      });
+    } finally {
+      setSendingEmail(false);
     }
-    
-    // Continue with normal appointment booking flow
-    toast({
-      title: "Appointment Request Received!",
-      description: "We'll confirm your appointment shortly via email or phone.",
-    });
-    
-    // Reset form would be handled in the AppointmentForm component
   };
 
   useEffect(() => {
