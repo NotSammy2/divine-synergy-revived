@@ -63,7 +63,7 @@ const Index = () => {
       <Navbar />
       <Hero content={pageContent?.home?.hero} config={config} />
       <About content={pageContent?.home?.about_preview} config={config} />
-      <Services />
+      <Services content={pageContent?.home?.services} />
       <Testimonials />
       <Contact />
       <Footer />

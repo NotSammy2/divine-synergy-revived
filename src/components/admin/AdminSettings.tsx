@@ -7,8 +7,15 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+interface SiteSettings {
+  siteName: string;
+  tagline: string;
+  contactEmail: string;
+  contactPhone: string;
+}
+
 const AdminSettings = () => {
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<SiteSettings>({
     siteName: '',
     tagline: '',
     contactEmail: '',
@@ -28,8 +35,8 @@ const AdminSettings = () => {
       .eq('config_key', 'site_settings')
       .single();
 
-    if (data) {
-      setSettings(data.config_value);
+    if (data && typeof data.config_value === 'object') {
+      setSettings(data.config_value as SiteSettings);
     }
   };
 

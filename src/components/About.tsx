@@ -1,59 +1,81 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Award, Users, Clock, Heart } from 'lucide-react';
 
-const About = () => {
+interface AboutProps {
+  content?: any;
+  config?: any;
+}
+
+const About: React.FC<AboutProps> = ({ content, config }) => {
+  const title = content?.title || "About Dr. Susmit Kesawarni";
+  const description = content?.description || "Government Medical Officer since 2005 with expertise in evidence-based homeopathy";
+  const experience = content?.experience || "19+ Years";
+  const qualification = content?.qualification || "BHMS";
+
   return (
-    <section id="about" className="py-20 bg-gradient-to-b from-white to-divine-cream/50">
+    <section id="about" className="py-20 bg-white">
       <div className="divine-container">
-        <h2 className="section-title text-center opacity-0 animate-fade-in hover:scale-105 transition-transform duration-300">About Our Clinic</h2>
-        <p className="section-subtitle text-center opacity-0 animate-fade-in delay-100">
-          Advanced homeopathic treatments using modern diagnostic approaches and evidence-based remedies
-        </p>
-        
-        <div className="grid md:grid-cols-2 gap-16 items-center mt-16">
-          <div className="relative opacity-0 animate-fade-in delay-200 hover:scale-105 transition-transform duration-300">
-            <div className="absolute inset-0 bg-divine-purple/10 rounded-2xl transform rotate-3"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" 
-              alt="Dr. Susmit Kesawarni's modern clinic" 
-              className="rounded-2xl shadow-lg relative z-10"
-            />
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="opacity-0 animate-fade-in">
+            <div className="relative hover:scale-105 transition-transform duration-500">
+              <div className="absolute inset-0 bg-gradient-divine rounded-2xl opacity-20 transform rotate-6"></div>
+              <img 
+                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=880&q=80" 
+                alt="Dr. Susmit Kesawarni" 
+                className="relative z-10 rounded-2xl w-full h-96 object-cover shadow-xl"
+              />
+            </div>
           </div>
           
-          <div className="opacity-0 animate-fade-in delay-300">
-            <h3 className="text-3xl font-serif font-bold mb-6 text-divine-purple">Meet Dr. Susmit Kesawarni</h3>
-            
-            <p className="mb-4 text-lg">
-              Dr. Susmit Kesawarni has been a dedicated Government Medical Officer since 2005, currently serving at Lal Bahadur Shastri Medical College, Prayagraj. With over 19 years of medical experience, she combines conventional medical knowledge with modern homeopathic treatments.
+          <div className="opacity-0 animate-fade-in delay-200">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
+              {title}
+            </h2>
+            <p className="text-xl text-divine-purple-dark mb-8 leading-relaxed">
+              {description}
             </p>
             
-            <p className="mb-8 text-lg">
-              At Synergy – The Divine Multispecialty Clinic in Prayagraj, Uttar Pradesh, Dr. Kesawarni provides evidence-based homeopathic treatments using contemporary diagnostic methods and scientifically validated remedies for optimal patient outcomes.
-            </p>
-            
-            <div className="grid grid-cols-2 gap-6">
-              <div className="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
-                <div className="w-16 h-16 bg-divine-purple-light rounded-full flex items-center justify-center mb-4">
-                  <span className="text-divine-purple text-2xl">⚕</span>
+            <div className="grid grid-cols-2 gap-6 mb-8">
+              <div className="text-center p-4 bg-divine-cream rounded-xl hover:shadow-md transition-shadow duration-300">
+                <div className="w-12 h-12 bg-divine-purple rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Clock className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-serif font-medium mb-2">Evidence-Based Care</h4>
-                <p className="text-sm text-divine-purple-dark">Modern homeopathic treatments backed by clinical research</p>
+                <div className="text-2xl font-bold text-divine-purple-dark">{experience}</div>
+                <div className="text-sm text-gray-600">Experience</div>
               </div>
               
-              <div className="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300">
-                <div className="w-16 h-16 bg-divine-gold-light rounded-full flex items-center justify-center mb-4">
-                  <span className="text-divine-gold text-2xl">🔬</span>
+              <div className="text-center p-4 bg-divine-cream rounded-xl hover:shadow-md transition-shadow duration-300">
+                <div className="w-12 h-12 bg-divine-gold rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Award className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-serif font-medium mb-2">Scientific Approach</h4>
-                <p className="text-sm text-divine-purple-dark">Combining medical expertise with homeopathic principles</p>
+                <div className="text-2xl font-bold text-divine-purple-dark">{qualification}</div>
+                <div className="text-sm text-gray-600">Qualification</div>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <Users className="w-6 h-6 text-divine-gold mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-divine-purple-dark">Government Medical Officer</h4>
+                  <p className="text-gray-600">Serving the community since 2005 with dedication and expertise</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <Heart className="w-6 h-6 text-divine-gold mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-divine-purple-dark">Evidence-Based Practice</h4>
+                  <p className="text-gray-600">Combining traditional homeopathic principles with modern medical understanding</p>
+                </div>
               </div>
             </div>
             
             <div className="mt-8">
-              <Link to="/about" className="divine-button-outline inline-block hover:scale-105 transition-transform duration-200">
-                Learn More About Us
-              </Link>
+              <a href="/about" className="divine-button-outline hover:scale-105 transition-transform duration-200">
+                Learn More About Our Clinic
+              </a>
             </div>
           </div>
         </div>

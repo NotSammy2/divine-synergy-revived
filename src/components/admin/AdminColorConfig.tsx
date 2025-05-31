@@ -7,8 +7,22 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+interface ColorConfig {
+  primary: string;
+  primaryLight: string;
+  primaryDark: string;
+  accent: string;
+  accentLight: string;
+  background: string;
+}
+
+interface FontConfig {
+  headingFont: string;
+  bodyFont: string;
+}
+
 const AdminColorConfig = () => {
-  const [colors, setColors] = useState({
+  const [colors, setColors] = useState<ColorConfig>({
     primary: '#8B5A6B',
     primaryLight: '#C4A5B0',
     primaryDark: '#6E4C57',
@@ -16,7 +30,7 @@ const AdminColorConfig = () => {
     accentLight: '#DDD1A0',
     background: '#F5F2E8'
   });
-  const [fonts, setFonts] = useState({
+  const [fonts, setFonts] = useState<FontConfig>({
     headingFont: 'Playfair Display',
     bodyFont: 'Poppins'
   });
@@ -35,13 +49,14 @@ const AdminColorConfig = () => {
 
     if (data) {
       data.forEach(item => {
-        if (item.config_key === 'theme_colors') {
-          setColors(item.config_value);
+        if (item.config_key === 'theme_colors' && typeof item.config_value === 'object') {
+          setColors(item.config_value as ColorConfig);
         }
-        if (item.config_key === 'typography') {
+        if (item.config_key === 'typography' && typeof item.config_value === 'object') {
+          const typographyData = item.config_value as any;
           setFonts({
-            headingFont: item.config_value.headingFont,
-            bodyFont: item.config_value.bodyFont
+            headingFont: typographyData.headingFont || 'Playfair Display',
+            bodyFont: typographyData.bodyFont || 'Poppins'
           });
         }
       });

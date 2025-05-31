@@ -35,8 +35,9 @@ const AdminContentManager = () => {
         if (!contentObj[item.page_name]) {
           contentObj[item.page_name] = {};
         }
+        const contentValue = typeof item.content_value === 'object' ? item.content_value : {};
         contentObj[item.page_name][item.section_name] = {
-          ...item.content_value,
+          ...(contentValue || {}),
           id: item.id,
           content_type: item.content_type
         };
@@ -48,7 +49,7 @@ const AdminContentManager = () => {
   const handleSectionSelect = (section: string) => {
     setSelectedSection(section);
     const content = pageContent[selectedPage]?.[section];
-    if (content) {
+    if (content && typeof content === 'object') {
       setEditingContent({ ...content });
     } else {
       setEditingContent({});
@@ -95,7 +96,7 @@ const AdminContentManager = () => {
       return <p className="text-gray-500">Select a section to edit content</p>;
     }
 
-    const content = editingContent;
+    const content = editingContent || {};
     
     return (
       <div className="space-y-4">
