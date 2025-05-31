@@ -49,11 +49,14 @@ const AdminColorConfig = () => {
 
     if (data) {
       data.forEach(item => {
-        if (item.config_key === 'theme_colors' && typeof item.config_value === 'object') {
-          setColors(item.config_value as ColorConfig);
+        if (item.config_key === 'theme_colors' && item.config_value && typeof item.config_value === 'object' && !Array.isArray(item.config_value)) {
+          const colorData = item.config_value as Record<string, any>;
+          if (colorData.primary && colorData.primaryLight && colorData.primaryDark && colorData.accent && colorData.accentLight && colorData.background) {
+            setColors(colorData as ColorConfig);
+          }
         }
-        if (item.config_key === 'typography' && typeof item.config_value === 'object') {
-          const typographyData = item.config_value as any;
+        if (item.config_key === 'typography' && item.config_value && typeof item.config_value === 'object' && !Array.isArray(item.config_value)) {
+          const typographyData = item.config_value as Record<string, any>;
           setFonts({
             headingFont: typographyData.headingFont || 'Playfair Display',
             bodyFont: typographyData.bodyFont || 'Poppins'
@@ -67,15 +70,15 @@ const AdminColorConfig = () => {
     setLoading(true);
     
     try {
-      // Update colors
+      // Update colors - convert to proper Json format
       await supabase
         .from('website_config')
         .upsert({
           config_key: 'theme_colors',
-          config_value: colors
+          config_value: colors as any
         });
 
-      // Update typography
+      // Update typography - convert to proper Json format
       await supabase
         .from('website_config')
         .upsert({
@@ -85,7 +88,7 @@ const AdminColorConfig = () => {
             bodyFont: fonts.bodyFont,
             headingSize: 'text-4xl',
             bodySize: 'text-base'
-          }
+          } as any
         });
 
       toast({

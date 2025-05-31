@@ -35,8 +35,11 @@ const AdminSettings = () => {
       .eq('config_key', 'site_settings')
       .single();
 
-    if (data && typeof data.config_value === 'object') {
-      setSettings(data.config_value as SiteSettings);
+    if (data && data.config_value && typeof data.config_value === 'object' && !Array.isArray(data.config_value)) {
+      const settingsData = data.config_value as Record<string, any>;
+      if (settingsData.siteName && settingsData.tagline && settingsData.contactEmail && settingsData.contactPhone) {
+        setSettings(settingsData as SiteSettings);
+      }
     }
   };
 
@@ -48,7 +51,7 @@ const AdminSettings = () => {
         .from('website_config')
         .upsert({
           config_key: 'site_settings',
-          config_value: settings
+          config_value: settings as any
         });
 
       toast({
