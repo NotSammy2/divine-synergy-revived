@@ -21,10 +21,15 @@ const AdminAuth = () => {
     setLoading(true);
     setError('');
 
+    console.log('Attempting to sign in with:', email);
+
     const { error } = await signIn(email, password);
     
     if (error) {
-      setError(error.message);
+      console.error('Login error:', error);
+      setError(error.message || 'An error occurred during login');
+    } else {
+      console.log('Login successful');
     }
     
     setLoading(false);
@@ -47,7 +52,8 @@ const AdminAuth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="admin@example.com"
+                placeholder="admin@synergydivineclinic.com"
+                disabled={loading}
               />
             </div>
             
@@ -61,6 +67,7 @@ const AdminAuth = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="Enter your password"
+                  disabled={loading}
                 />
                 <Button
                   type="button"
@@ -68,6 +75,7 @@ const AdminAuth = () => {
                   size="sm"
                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
@@ -87,6 +95,12 @@ const AdminAuth = () => {
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
+
+            <div className="text-sm text-gray-600 text-center">
+              <p>Test credentials:</p>
+              <p>Email: admin@synergydivineclinic.com</p>
+              <p>Password: AdminPass123!</p>
+            </div>
           </form>
         </CardContent>
       </Card>
