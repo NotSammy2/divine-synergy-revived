@@ -1,9 +1,23 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar } from 'lucide-react';
 
-const Hero = () => {
+interface HeroProps {
+  content?: {
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    buttonText?: string;
+  };
+  config?: any;
+}
+
+const Hero: React.FC<HeroProps> = ({ content, config }) => {
+  const title = content?.title || "Modern";
+  const subtitle = content?.subtitle || "Homeopathic Medicine";
+  const description = content?.description || "Experience evidence-based homeopathic treatment with Dr. Susmit Kesawarni at Synergy - The Divine Multispecialty Clinic in Prayagraj";
+  const buttonText = content?.buttonText || "Book An Appointment";
+
   return (
     <section 
       id="home" 
@@ -19,15 +33,15 @@ const Hero = () => {
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 mb-12 md:mb-0 opacity-0 animate-fade-in">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 hover:scale-105 transition-transform duration-300">
-              Modern <span className="divine-gradient-text">Homeopathic</span> Medicine
+              {title} <span className="divine-gradient-text">{subtitle}</span>
             </h1>
             <p className="text-xl md:text-2xl text-divine-purple-dark mb-8 max-w-lg">
-              Experience evidence-based homeopathic treatment with Dr. Susmit Kesawarni at Synergy - The Divine Multispecialty Clinic in Prayagraj
+              {description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/appointment" className="divine-button-primary text-center flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-200">
                 <Calendar size={18} />
-                Book An Appointment
+                {buttonText}
               </Link>
               <Link to="/about" className="divine-button-outline text-center hover:scale-105 transition-transform duration-200">
                 Learn More About Us
@@ -43,8 +57,6 @@ const Hero = () => {
                 alt="Modern homeopathic medicine" 
                 className="rounded-full w-60 h-60 md:w-72 md:h-72 object-cover border-4 border-white shadow-lg relative z-10"
               />
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-divine-gold-light border-4 border-white shadow-md animate-bounce"></div>
-              <div className="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-divine-purple-light border-4 border-white shadow-md animate-bounce" style={{ animationDelay: '0.5s' }}></div>
             </div>
           </div>
         </div>

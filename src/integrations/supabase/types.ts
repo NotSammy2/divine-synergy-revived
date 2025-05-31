@@ -9,7 +9,114 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      media_assets: {
+        Row: {
+          alt_text: string | null
+          file_name: string
+          file_path: string
+          file_type: string
+          id: string
+          uploaded_at: string
+          usage_context: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          file_name: string
+          file_path: string
+          file_type: string
+          id?: string
+          uploaded_at?: string
+          usage_context?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          file_name?: string
+          file_path?: string
+          file_type?: string
+          id?: string
+          uploaded_at?: string
+          usage_context?: string | null
+        }
+        Relationships: []
+      }
+      page_content: {
+        Row: {
+          content_type: string
+          content_value: Json
+          id: string
+          is_active: boolean
+          page_name: string
+          section_name: string
+          updated_at: string
+        }
+        Insert: {
+          content_type: string
+          content_value: Json
+          id?: string
+          is_active?: boolean
+          page_name: string
+          section_name: string
+          updated_at?: string
+        }
+        Update: {
+          content_type?: string
+          content_value?: Json
+          id?: string
+          is_active?: boolean
+          page_name?: string
+          section_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      website_config: {
+        Row: {
+          config_key: string
+          config_value: Json
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          config_key: string
+          config_value: Json
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          config_key?: string
+          config_value?: Json
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
