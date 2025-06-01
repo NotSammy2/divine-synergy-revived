@@ -42,9 +42,25 @@ export const useWebsiteContent = () => {
     if (data) {
       const configObj: any = {};
       data.forEach(item => {
-        configObj[item.config_key] = item.config_value;
+        try {
+          configObj[item.config_key] = item.config_value;
+        } catch (error) {
+          console.error('Error parsing config:', item.config_key, error);
+        }
       });
       setConfig(configObj);
+      
+      // Apply theme colors to CSS variables
+      if (configObj.theme_colors) {
+        const colors = configObj.theme_colors;
+        const root = document.documentElement;
+        root.style.setProperty('--divine-purple', colors.primary || '#8B5A6B');
+        root.style.setProperty('--divine-purple-light', colors.primaryLight || '#C4A5B0');
+        root.style.setProperty('--divine-purple-dark', colors.primaryDark || '#6E4C57');
+        root.style.setProperty('--divine-gold', colors.accent || '#B8860B');
+        root.style.setProperty('--divine-gold-light', colors.accentLight || '#DDD1A0');
+        root.style.setProperty('--divine-cream', colors.background || '#F5F2E8');
+      }
     }
   };
 
@@ -66,7 +82,12 @@ export const useWebsiteContent = () => {
         if (!contentObj[item.page_name]) {
           contentObj[item.page_name] = {};
         }
-        contentObj[item.page_name][item.section_name] = item.content_value;
+        try {
+          contentObj[item.page_name][item.section_name] = item.content_value;
+        } catch (error) {
+          console.error('Error parsing content:', item.page_name, item.section_name, error);
+          contentObj[item.page_name][item.section_name] = {};
+        }
       });
       setPageContent(contentObj);
     }
@@ -74,8 +95,13 @@ export const useWebsiteContent = () => {
 
   useEffect(() => {
     const loadContent = async () => {
-      await Promise.all([fetchConfig(), fetchPageContent()]);
-      setLoading(false);
+      try {
+        await Promise.all([fetchConfig(), fetchPageContent()]);
+      } catch (error) {
+        console.error('Error loading website content:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     
     loadContent();

@@ -8,16 +8,26 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Plus } from 'lucide-react';
 
 const AdminContentManager = () => {
   const [pageContent, setPageContent] = useState<any>({});
   const [selectedPage, setSelectedPage] = useState('home');
   const [selectedSection, setSelectedSection] = useState('');
   const [editingContent, setEditingContent] = useState<any>({});
+  const [newSectionName, setNewSectionName] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   const pages = ['home', 'about', 'services', 'contact'];
+
+  // Default sections for each page
+  const defaultSections = {
+    home: ['hero', 'about_preview', 'services_preview'],
+    about: ['story', 'team', 'mission'],
+    services: ['overview', 'treatments', 'approach'],
+    contact: ['info', 'location', 'hours']
+  };
 
   useEffect(() => {
     fetchPageContent();
@@ -29,8 +39,22 @@ const AdminContentManager = () => {
       .select('*')
       .order('page_name, section_name');
 
+    const contentObj: any = {};
+    
+    // Initialize with default sections
+    pages.forEach(page => {
+      contentObj[page] = {};
+      defaultSections[page as keyof typeof defaultSections]?.forEach(section => {
+        contentObj[page][section] = {
+          title: '',
+          description: '',
+          content_type: 'json'
+        };
+      });
+    });
+
+    // Override with existing data
     if (data) {
-      const contentObj: any = {};
       data.forEach(item => {
         if (!contentObj[item.page_name]) {
           contentObj[item.page_name] = {};
@@ -42,7 +66,16 @@ const AdminContentManager = () => {
           content_type: item.content_type
         };
       });
-      setPageContent(contentObj);
+    }
+    
+    setPageContent(contentObj);
+    
+    // Auto-select first section if none selected
+    if (!selectedSection && contentObj[selectedPage]) {
+      const firstSection = Object.keys(contentObj[selectedPage])[0];
+      if (firstSection) {
+        handleSectionSelect(firstSection);
+      }
     }
   };
 
@@ -52,8 +85,53 @@ const AdminContentManager = () => {
     if (content && typeof content === 'object') {
       setEditingContent({ ...content });
     } else {
-      setEditingContent({});
+      setEditingContent({
+        title: '',
+        description: '',
+        buttonText: '',
+        content_type: 'json'
+      });
     }
+  };
+
+  const handleCreateSection = async () => {
+    if (!newSectionName.trim()) return;
+    
+    const newContent = {
+      title: '',
+      description: '',
+      buttonText: ''
+    };
+    
+    setLoading(true);
+    
+    try {
+      await supabase
+        .from('page_content')
+        .insert({
+          page_name: selectedPage,
+          section_name: newSectionName,
+          content_type: 'json',
+          content_value: newContent,
+          is_active: true
+        });
+
+      toast({
+        title: "Section Created",
+        description: `New section "${newSectionName}" has been created.`,
+      });
+      
+      setNewSectionName('');
+      fetchPageContent();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create section. Please try again.",
+        variant: "destructive"
+      });
+    }
+    
+    setLoading(false);
   };
 
   const handleSave = async () => {
@@ -100,25 +178,63 @@ const AdminContentManager = () => {
     
     return (
       <div className="space-y-4">
-        {Object.keys(content).filter(key => !['id', 'content_type'].includes(key)).map((key) => (
-          <div key={key}>
-            <Label htmlFor={key} className="capitalize">{key.replace(/([A-Z])/g, ' $1')}</Label>
-            {key.includes('description') || key.includes('story') || key.includes('content') ? (
-              <Textarea
-                id={key}
-                value={content[key] || ''}
-                onChange={(e) => setEditingContent({...content, [key]: e.target.value})}
-                className="min-h-[100px]"
-              />
-            ) : (
-              <Input
-                id={key}
-                value={content[key] || ''}
-                onChange={(e) => setEditingContent({...content, [key]: e.target.value})}
-              />
-            )}
+        {/* Common fields for all sections */}
+        <div>
+          <Label htmlFor="title">Title</Label>
+          <Input
+            id="title"
+            value={content.title || ''}
+            onChange={(e) => setEditingContent({...content, title: e.target.value})}
+            placeholder="Enter section title"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            value={content.description || ''}
+            onChange={(e) => setEditingContent({...content, description: e.target.value})}
+            className="min-h-[100px]"
+            placeholder="Enter section description"
+          />
+        </div>
+
+        {/* Additional fields based on section type */}
+        {(selectedSection.includes('hero') || selectedSection.includes('button')) && (
+          <div>
+            <Label htmlFor="buttonText">Button Text</Label>
+            <Input
+              id="buttonText"
+              value={content.buttonText || ''}
+              onChange={(e) => setEditingContent({...content, buttonText: e.target.value})}
+              placeholder="Enter button text"
+            />
           </div>
-        ))}
+        )}
+
+        {selectedSection.includes('about') && (
+          <>
+            <div>
+              <Label htmlFor="experience">Years of Experience</Label>
+              <Input
+                id="experience"
+                value={content.experience || ''}
+                onChange={(e) => setEditingContent({...content, experience: e.target.value})}
+                placeholder="e.g., 19+ Years"
+              />
+            </div>
+            <div>
+              <Label htmlFor="qualification">Qualification</Label>
+              <Input
+                id="qualification"
+                value={content.qualification || ''}
+                onChange={(e) => setEditingContent({...content, qualification: e.target.value})}
+                placeholder="e.g., BHMS"
+              />
+            </div>
+          </>
+        )}
         
         <Button 
           onClick={handleSave}
@@ -140,7 +256,11 @@ const AdminContentManager = () => {
         <CardContent className="space-y-4">
           <div>
             <Label>Page</Label>
-            <Select value={selectedPage} onValueChange={setSelectedPage}>
+            <Select value={selectedPage} onValueChange={(value) => {
+              setSelectedPage(value);
+              setSelectedSection('');
+              setEditingContent({});
+            }}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -155,21 +275,42 @@ const AdminContentManager = () => {
           </div>
           
           <div>
-            <Label>Section</Label>
-            <div className="space-y-2">
+            <Label>Sections</Label>
+            <div className="space-y-2 max-h-60 overflow-y-auto">
               {pageContent[selectedPage] ? Object.keys(pageContent[selectedPage]).map(section => (
                 <Button
                   key={section}
                   variant={selectedSection === section ? "default" : "outline"}
                   onClick={() => handleSectionSelect(section)}
-                  className="w-full justify-start"
+                  className="w-full justify-start text-sm"
                   size="sm"
                 >
                   {section.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </Button>
               )) : (
-                <p className="text-sm text-gray-500">No sections available</p>
+                <p className="text-sm text-gray-500">Loading sections...</p>
               )}
+            </div>
+            
+            {/* Add new section */}
+            <div className="pt-4 border-t">
+              <Label>Create New Section</Label>
+              <div className="flex gap-2 mt-2">
+                <Input
+                  value={newSectionName}
+                  onChange={(e) => setNewSectionName(e.target.value)}
+                  placeholder="Section name"
+                  className="text-sm"
+                />
+                <Button
+                  onClick={handleCreateSection}
+                  disabled={!newSectionName.trim() || loading}
+                  size="sm"
+                  className="shrink-0"
+                >
+                  <Plus size={16} />
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -177,7 +318,9 @@ const AdminContentManager = () => {
 
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>Edit Content</CardTitle>
+          <CardTitle>
+            Edit Content {selectedSection && `- ${selectedSection.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {renderContentEditor()}
