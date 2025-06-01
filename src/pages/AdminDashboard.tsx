@@ -1,18 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LogOut, Palette, FileText, Image, Settings } from 'lucide-react';
+import { Palette, FileText, Image, Settings } from 'lucide-react';
 import AdminColorConfig from '@/components/admin/AdminColorConfig';
 import AdminContentManager from '@/components/admin/AdminContentManager';
 import AdminMediaManager from '@/components/admin/AdminMediaManager';
 import AdminSettings from '@/components/admin/AdminSettings';
 
 const AdminDashboard = () => {
-  const { signOut, user } = useAuth();
-
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b">
@@ -23,18 +20,6 @@ const AdminDashboard = () => {
                 Admin Dashboard
               </h1>
               <p className="text-sm text-gray-600">Content Management System</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.email}</span>
-              <Button
-                onClick={signOut}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <LogOut size={16} />
-                Sign Out
-              </Button>
             </div>
           </div>
         </div>
