@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SiteSettings {
   siteName: string;
@@ -22,52 +24,121 @@ const AdminSettings = () => {
     contactPhone: ''
   });
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const { toast } = useToast();
+  const { isAdmin, session } = useAuth();
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    if (isAdmin && session) {
+      fetchSettings();
+    }
+  }, [isAdmin, session]);
 
   const fetchSettings = async () => {
-    const { data } = await supabase
-      .from('website_config')
-      .select('*')
-      .eq('config_key', 'site_settings')
-      .single();
+    if (!isAdmin) {
+      setFetchLoading(false);
+      return;
+    }
 
-    if (data && data.config_value && typeof data.config_value === 'object' && !Array.isArray(data.config_value)) {
-      const settingsData = data.config_value as Record<string, any>;
-      if (settingsData.siteName && settingsData.tagline && settingsData.contactEmail && settingsData.contactPhone) {
-        setSettings(settingsData as SiteSettings);
+    try {
+      const { data, error } = await supabase
+        .from('website_config')
+        .select('*')
+        .eq('config_key', 'site_settings')
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching settings:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load settings. Please check your admin permissions.",
+          variant: "destructive"
+        });
+        return;
       }
+
+      if (data && data.config_value && typeof data.config_value === 'object' && !Array.isArray(data.config_value)) {
+        const settingsData = data.config_value as Record<string, any>;
+        if (settingsData.siteName && settingsData.tagline && settingsData.contactEmail && settingsData.contactPhone) {
+          setSettings(settingsData as SiteSettings);
+        }
+      }
+    } catch (error) {
+      console.error('Error in fetchSettings:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred while loading settings.",
+        variant: "destructive"
+      });
+    } finally {
+      setFetchLoading(false);
     }
   };
 
   const handleSave = async () => {
+    if (!isAdmin) return;
+    
     setLoading(true);
     
     try {
-      await supabase
+      const { error } = await supabase
         .from('website_config')
         .upsert({
           config_key: 'site_settings',
-          config_value: settings as any
+          config_value: settings as any,
+          created_by: session?.user?.id
         });
+
+      if (error) {
+        console.error('Error saving settings:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update settings. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
 
       toast({
         title: "Settings Updated",
         description: "Site settings have been saved successfully.",
       });
     } catch (error) {
+      console.error('Error in handleSave:', error);
       toast({
         title: "Error",
-        description: "Failed to update settings. Please try again.",
+        description: "An unexpected error occurred.",
         variant: "destructive"
       });
     }
     
     setLoading(false);
   };
+
+  if (!isAdmin) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <p className="text-center text-gray-500">
+            You need admin privileges to access site settings.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (fetchLoading) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <span className="ml-2">Loading settings...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -81,7 +152,7 @@ const AdminSettings = () => {
             id="siteName"
             value={settings.siteName}
             onChange={(e) => setSettings({...settings, siteName: e.target.value})}
-            placeholder="Synergy - The Divine Clinic"
+            placeholder="Divine Homeopathy"
           />
         </div>
         
@@ -91,7 +162,7 @@ const AdminSettings = () => {
             id="tagline"
             value={settings.tagline}
             onChange={(e) => setSettings({...settings, tagline: e.target.value})}
-            placeholder="Modern Homeopathic Excellence"
+            placeholder="Holistic Healing Solutions"
           />
         </div>
         
@@ -102,7 +173,7 @@ const AdminSettings = () => {
             type="email"
             value={settings.contactEmail}
             onChange={(e) => setSettings({...settings, contactEmail: e.target.value})}
-            placeholder="info@synergydivineclinic.com"
+            placeholder="info@divinehomeopathy.com"
           />
         </div>
         
@@ -112,7 +183,7 @@ const AdminSettings = () => {
             id="contactPhone"
             value={settings.contactPhone}
             onChange={(e) => setSettings({...settings, contactPhone: e.target.value})}
-            placeholder="+91-XXXXXXXXXX"
+            placeholder="+1-234-567-8900"
           />
         </div>
         
@@ -121,7 +192,14 @@ const AdminSettings = () => {
           disabled={loading}
           className="w-full bg-divine-purple hover:bg-divine-purple-dark"
         >
-          {loading ? 'Saving...' : 'Save Settings'}
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            'Save Settings'
+          )}
         </Button>
       </CardContent>
     </Card>

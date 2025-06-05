@@ -39,6 +39,7 @@ export type Database = {
       media_assets: {
         Row: {
           alt_text: string | null
+          created_by: string | null
           file_name: string
           file_path: string
           file_type: string
@@ -48,6 +49,7 @@ export type Database = {
         }
         Insert: {
           alt_text?: string | null
+          created_by?: string | null
           file_name: string
           file_path: string
           file_type: string
@@ -57,6 +59,7 @@ export type Database = {
         }
         Update: {
           alt_text?: string | null
+          created_by?: string | null
           file_name?: string
           file_path?: string
           file_type?: string
@@ -70,6 +73,8 @@ export type Database = {
         Row: {
           content_type: string
           content_value: Json
+          created_at: string | null
+          created_by: string | null
           id: string
           is_active: boolean
           page_name: string
@@ -79,6 +84,8 @@ export type Database = {
         Insert: {
           content_type: string
           content_value: Json
+          created_at?: string | null
+          created_by?: string | null
           id?: string
           is_active?: boolean
           page_name: string
@@ -88,6 +95,8 @@ export type Database = {
         Update: {
           content_type?: string
           content_value?: Json
+          created_at?: string | null
+          created_by?: string | null
           id?: string
           is_active?: boolean
           page_name?: string
@@ -100,18 +109,24 @@ export type Database = {
         Row: {
           config_key: string
           config_value: Json
+          created_at: string | null
+          created_by: string | null
           id: string
           updated_at: string
         }
         Insert: {
           config_key: string
           config_value: Json
+          created_at?: string | null
+          created_by?: string | null
           id?: string
           updated_at?: string
         }
         Update: {
           config_key?: string
           config_value?: Json
+          created_at?: string | null
+          created_by?: string | null
           id?: string
           updated_at?: string
         }
@@ -122,7 +137,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      check_admin: {
+      get_user_admin_status: {
+        Args: { user_id_param: string }
+        Returns: boolean
+      }
+      is_current_user_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }

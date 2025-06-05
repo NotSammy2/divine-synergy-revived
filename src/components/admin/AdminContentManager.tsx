@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus } from 'lucide-react';
+import { Plus, Loader2 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AdminContentManager = () => {
   const [pageContent, setPageContent] = useState<any>({});
@@ -17,11 +18,12 @@ const AdminContentManager = () => {
   const [editingContent, setEditingContent] = useState<any>({});
   const [newSectionName, setNewSectionName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(true);
   const { toast } = useToast();
+  const { isAdmin, session } = useAuth();
 
   const pages = ['home', 'about', 'services', 'contact'];
 
-  // Default sections for each page
   const defaultSections = {
     home: ['hero', 'about_preview', 'services_preview'],
     about: ['story', 'team', 'mission'],
@@ -30,52 +32,86 @@ const AdminContentManager = () => {
   };
 
   useEffect(() => {
-    fetchPageContent();
-  }, []);
+    if (isAdmin && session) {
+      fetchPageContent();
+    }
+  }, [isAdmin, session]);
 
   const fetchPageContent = async () => {
-    const { data } = await supabase
-      .from('page_content')
-      .select('*')
-      .order('page_name, section_name');
-
-    const contentObj: any = {};
-    
-    // Initialize with default sections
-    pages.forEach(page => {
-      contentObj[page] = {};
-      defaultSections[page as keyof typeof defaultSections]?.forEach(section => {
-        contentObj[page][section] = {
-          title: '',
-          description: '',
-          content_type: 'json'
-        };
+    if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You need admin privileges to access this content.",
+        variant: "destructive"
       });
-    });
-
-    // Override with existing data
-    if (data) {
-      data.forEach(item => {
-        if (!contentObj[item.page_name]) {
-          contentObj[item.page_name] = {};
-        }
-        const contentValue = typeof item.content_value === 'object' ? item.content_value : {};
-        contentObj[item.page_name][item.section_name] = {
-          ...(contentValue || {}),
-          id: item.id,
-          content_type: item.content_type
-        };
-      });
+      return;
     }
+
+    setFetchLoading(true);
     
-    setPageContent(contentObj);
-    
-    // Auto-select first section if none selected
-    if (!selectedSection && contentObj[selectedPage]) {
-      const firstSection = Object.keys(contentObj[selectedPage])[0];
-      if (firstSection) {
-        handleSectionSelect(firstSection);
+    try {
+      const { data, error } = await supabase
+        .from('page_content')
+        .select('*')
+        .order('page_name, section_name');
+
+      if (error) {
+        console.error('Error fetching content:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load page content. Please check your admin permissions.",
+          variant: "destructive"
+        });
+        return;
       }
+
+      const contentObj: any = {};
+      
+      // Initialize with default sections
+      pages.forEach(page => {
+        contentObj[page] = {};
+        defaultSections[page as keyof typeof defaultSections]?.forEach(section => {
+          contentObj[page][section] = {
+            title: '',
+            description: '',
+            content_type: 'json'
+          };
+        });
+      });
+
+      // Override with existing data
+      if (data) {
+        data.forEach(item => {
+          if (!contentObj[item.page_name]) {
+            contentObj[item.page_name] = {};
+          }
+          const contentValue = typeof item.content_value === 'object' ? item.content_value : {};
+          contentObj[item.page_name][item.section_name] = {
+            ...(contentValue || {}),
+            id: item.id,
+            content_type: item.content_type
+          };
+        });
+      }
+      
+      setPageContent(contentObj);
+      
+      // Auto-select first section if none selected
+      if (!selectedSection && contentObj[selectedPage]) {
+        const firstSection = Object.keys(contentObj[selectedPage])[0];
+        if (firstSection) {
+          handleSectionSelect(firstSection);
+        }
+      }
+    } catch (error) {
+      console.error('Error in fetchPageContent:', error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred while loading content.",
+        variant: "destructive"
+      });
+    } finally {
+      setFetchLoading(false);
     }
   };
 
@@ -95,7 +131,7 @@ const AdminContentManager = () => {
   };
 
   const handleCreateSection = async () => {
-    if (!newSectionName.trim()) return;
+    if (!newSectionName.trim() || !isAdmin) return;
     
     const newContent = {
       title: '',
@@ -106,15 +142,26 @@ const AdminContentManager = () => {
     setLoading(true);
     
     try {
-      await supabase
+      const { error } = await supabase
         .from('page_content')
         .insert({
           page_name: selectedPage,
           section_name: newSectionName,
           content_type: 'json',
           content_value: newContent,
-          is_active: true
+          is_active: true,
+          created_by: session?.user?.id
         });
+
+      if (error) {
+        console.error('Error creating section:', error);
+        toast({
+          title: "Error",
+          description: "Failed to create section. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
 
       toast({
         title: "Section Created",
@@ -124,9 +171,10 @@ const AdminContentManager = () => {
       setNewSectionName('');
       fetchPageContent();
     } catch (error) {
+      console.error('Error in handleCreateSection:', error);
       toast({
         title: "Error",
-        description: "Failed to create section. Please try again.",
+        description: "An unexpected error occurred.",
         variant: "destructive"
       });
     }
@@ -135,22 +183,33 @@ const AdminContentManager = () => {
   };
 
   const handleSave = async () => {
-    if (!selectedSection) return;
+    if (!selectedSection || !isAdmin) return;
     
     setLoading(true);
     
     try {
       const { id, content_type, ...contentData } = editingContent;
       
-      await supabase
+      const { error } = await supabase
         .from('page_content')
         .upsert({
           page_name: selectedPage,
           section_name: selectedSection,
           content_type: content_type || 'json',
           content_value: contentData,
-          is_active: true
+          is_active: true,
+          created_by: session?.user?.id
         });
+
+      if (error) {
+        console.error('Error saving content:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update content. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
 
       toast({
         title: "Content Updated",
@@ -159,15 +218,41 @@ const AdminContentManager = () => {
       
       fetchPageContent();
     } catch (error) {
+      console.error('Error in handleSave:', error);
       toast({
         title: "Error",
-        description: "Failed to update content. Please try again.",
+        description: "An unexpected error occurred.",
         variant: "destructive"
       });
     }
     
     setLoading(false);
   };
+
+  if (!isAdmin) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <p className="text-center text-gray-500">
+            You need admin privileges to access this content management system.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (fetchLoading) {
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <span className="ml-2">Loading content...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const renderContentEditor = () => {
     if (!selectedSection) {
@@ -178,7 +263,6 @@ const AdminContentManager = () => {
     
     return (
       <div className="space-y-4">
-        {/* Common fields for all sections */}
         <div>
           <Label htmlFor="title">Title</Label>
           <Input
@@ -200,7 +284,6 @@ const AdminContentManager = () => {
           />
         </div>
 
-        {/* Additional fields based on section type */}
         {(selectedSection.includes('hero') || selectedSection.includes('button')) && (
           <div>
             <Label htmlFor="buttonText">Button Text</Label>
@@ -241,7 +324,14 @@ const AdminContentManager = () => {
           disabled={loading}
           className="w-full bg-divine-purple hover:bg-divine-purple-dark"
         >
-          {loading ? 'Saving...' : 'Save Content'}
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            'Save Content'
+          )}
         </Button>
       </div>
     );
@@ -292,7 +382,6 @@ const AdminContentManager = () => {
               )}
             </div>
             
-            {/* Add new section */}
             <div className="pt-4 border-t">
               <Label>Create New Section</Label>
               <div className="flex gap-2 mt-2">
@@ -308,7 +397,7 @@ const AdminContentManager = () => {
                   size="sm"
                   className="shrink-0"
                 >
-                  <Plus size={16} />
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus size={16} />}
                 </Button>
               </div>
             </div>

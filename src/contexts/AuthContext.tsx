@@ -10,6 +10,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  checkAdminStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,39 +29,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const checkAdminStatus = async (userId: string) => {
+  const checkAdminStatus = async () => {
+    if (!session?.user) {
+      setIsAdmin(false);
+      return;
+    }
+
     try {
-      // Use a simple query to avoid RLS recursion
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('id, is_active')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .maybeSingle();
+      // Use the new security definer function to check admin status
+      const { data, error } = await supabase.rpc('is_current_user_admin');
       
       if (error) {
         console.error('Error checking admin status:', error);
-        return false;
+        setIsAdmin(false);
+        return;
       }
       
-      return !!data;
+      console.log('Admin check result:', data);
+      setIsAdmin(data === true);
     } catch (error) {
       console.error('Error in checkAdminStatus:', error);
-      return false;
+      setIsAdmin(false);
     }
   };
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        checkAdminStatus(session.user.id).then(setIsAdmin);
-      } else {
-        setIsAdmin(false);
-      }
       setLoading(false);
     });
 
@@ -70,22 +68,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('Auth event:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Defer admin check to avoid potential recursion
-          setTimeout(async () => {
-            const adminStatus = await checkAdminStatus(session.user.id);
-            setIsAdmin(adminStatus);
-          }, 100);
-        } else {
-          setIsAdmin(false);
-        }
         setLoading(false);
       }
     );
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Check admin status whenever session changes
+  useEffect(() => {
+    if (session?.user) {
+      checkAdminStatus();
+    } else {
+      setIsAdmin(false);
+    }
+  }, [session]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -124,6 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loading,
       signIn,
       signOut,
+      checkAdminStatus,
     }}>
       {children}
     </AuthContext.Provider>
