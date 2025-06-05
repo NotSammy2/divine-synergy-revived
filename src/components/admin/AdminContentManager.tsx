@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,7 @@ const AdminContentManager = () => {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const { toast } = useToast();
-  const { isAdmin, session } = useAuth();
+  const { session } = useAuth();
 
   const pages = ['home', 'about', 'services', 'contact'];
 
@@ -32,21 +31,12 @@ const AdminContentManager = () => {
   };
 
   useEffect(() => {
-    if (isAdmin && session) {
+    if (session) {
       fetchPageContent();
     }
-  }, [isAdmin, session]);
+  }, [session]);
 
   const fetchPageContent = async () => {
-    if (!isAdmin) {
-      toast({
-        title: "Access Denied",
-        description: "You need admin privileges to access this content.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setFetchLoading(true);
     
     try {
@@ -59,7 +49,7 @@ const AdminContentManager = () => {
         console.error('Error fetching content:', error);
         toast({
           title: "Error",
-          description: "Failed to load page content. Please check your admin permissions.",
+          description: "Failed to load page content.",
           variant: "destructive"
         });
         return;
@@ -131,7 +121,7 @@ const AdminContentManager = () => {
   };
 
   const handleCreateSection = async () => {
-    if (!newSectionName.trim() || !isAdmin) return;
+    if (!newSectionName.trim()) return;
     
     const newContent = {
       title: '',
@@ -183,7 +173,7 @@ const AdminContentManager = () => {
   };
 
   const handleSave = async () => {
-    if (!selectedSection || !isAdmin) return;
+    if (!selectedSection) return;
     
     setLoading(true);
     
@@ -229,12 +219,12 @@ const AdminContentManager = () => {
     setLoading(false);
   };
 
-  if (!isAdmin) {
+  if (!session) {
     return (
       <Card>
         <CardContent className="pt-6">
           <p className="text-center text-gray-500">
-            You need admin privileges to access this content management system.
+            Please sign in to access content management.
           </p>
         </CardContent>
       </Card>
@@ -341,7 +331,7 @@ const AdminContentManager = () => {
     <div className="grid gap-6 md:grid-cols-3">
       <Card>
         <CardHeader>
-          <CardTitle>Select Page & Section</CardTitle>
+          <CardTitle>Select Page & Section (Testing Mode)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>

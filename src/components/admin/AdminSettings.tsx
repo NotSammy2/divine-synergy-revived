@@ -26,20 +26,15 @@ const AdminSettings = () => {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const { toast } = useToast();
-  const { isAdmin, session } = useAuth();
+  const { session } = useAuth();
 
   useEffect(() => {
-    if (isAdmin && session) {
+    if (session) {
       fetchSettings();
     }
-  }, [isAdmin, session]);
+  }, [session]);
 
   const fetchSettings = async () => {
-    if (!isAdmin) {
-      setFetchLoading(false);
-      return;
-    }
-
     try {
       const { data, error } = await supabase
         .from('website_config')
@@ -51,7 +46,7 @@ const AdminSettings = () => {
         console.error('Error fetching settings:', error);
         toast({
           title: "Error",
-          description: "Failed to load settings. Please check your admin permissions.",
+          description: "Failed to load settings.",
           variant: "destructive"
         });
         return;
@@ -76,8 +71,6 @@ const AdminSettings = () => {
   };
 
   const handleSave = async () => {
-    if (!isAdmin) return;
-    
     setLoading(true);
     
     try {
@@ -115,12 +108,12 @@ const AdminSettings = () => {
     setLoading(false);
   };
 
-  if (!isAdmin) {
+  if (!session) {
     return (
       <Card>
         <CardContent className="pt-6">
           <p className="text-center text-gray-500">
-            You need admin privileges to access site settings.
+            Please sign in to access site settings.
           </p>
         </CardContent>
       </Card>
@@ -143,7 +136,7 @@ const AdminSettings = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Site Settings</CardTitle>
+        <CardTitle>Site Settings (Testing Mode)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>

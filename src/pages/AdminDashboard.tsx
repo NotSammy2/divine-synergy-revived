@@ -19,7 +19,10 @@ const AdminDashboard = () => {
               <h1 className="text-2xl font-serif font-bold text-divine-purple">
                 Admin Dashboard
               </h1>
-              <p className="text-sm text-gray-600">Content Management System</p>
+              <p className="text-sm text-gray-600">Content Management System (Testing Mode)</p>
+              <p className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded mt-1 inline-block">
+                Admin privileges temporarily disabled for testing
+              </p>
             </div>
           </div>
         </div>
