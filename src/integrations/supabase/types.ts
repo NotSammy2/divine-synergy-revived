@@ -137,14 +137,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_user_admin_status: {
-        Args: { user_id_param: string }
-        Returns: boolean
-      }
-      is_current_user_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

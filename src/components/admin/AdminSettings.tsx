@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -136,7 +135,7 @@ const AdminSettings = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Site Settings (Testing Mode)</CardTitle>
+        <CardTitle>Site Settings</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>

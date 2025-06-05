@@ -331,7 +331,7 @@ const AdminContentManager = () => {
     <div className="grid gap-6 md:grid-cols-3">
       <Card>
         <CardHeader>
-          <CardTitle>Select Page & Section (Testing Mode)</CardTitle>
+          <CardTitle>Select Page & Section</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
