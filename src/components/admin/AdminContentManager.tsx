@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Loader2 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 
 const AdminContentManager = () => {
   const [pageContent, setPageContent] = useState<any>({});
@@ -19,7 +18,6 @@ const AdminContentManager = () => {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const { toast } = useToast();
-  const { session } = useAuth();
 
   const pages = ['home', 'about', 'services', 'contact'];
 
@@ -31,10 +29,8 @@ const AdminContentManager = () => {
   };
 
   useEffect(() => {
-    if (session) {
-      fetchPageContent();
-    }
-  }, [session]);
+    fetchPageContent();
+  }, []);
 
   const fetchPageContent = async () => {
     setFetchLoading(true);
@@ -139,8 +135,7 @@ const AdminContentManager = () => {
           section_name: newSectionName,
           content_type: 'json',
           content_value: newContent,
-          is_active: true,
-          created_by: session?.user?.id
+          is_active: true
         });
 
       if (error) {
@@ -187,8 +182,7 @@ const AdminContentManager = () => {
           section_name: selectedSection,
           content_type: content_type || 'json',
           content_value: contentData,
-          is_active: true,
-          created_by: session?.user?.id
+          is_active: true
         });
 
       if (error) {
@@ -218,18 +212,6 @@ const AdminContentManager = () => {
     
     setLoading(false);
   };
-
-  if (!session) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <p className="text-center text-gray-500">
-            Please sign in to access content management.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
 
   if (fetchLoading) {
     return (

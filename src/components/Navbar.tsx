@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Calendar } from 'lucide-react';
+import { Menu, X, Calendar, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -55,6 +54,9 @@ const Navbar = () => {
             <Calendar size={18} />
             Book Appointment
           </Link>
+          <Link to="/admin" className="text-divine-purple-dark hover:text-divine-purple transition-colors">
+            <Settings size={20} />
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -87,6 +89,14 @@ const Navbar = () => {
             >
               <Calendar size={18} />
               Book Appointment
+            </Link>
+            <Link 
+              to="/admin"
+              className="text-divine-purple-dark hover:text-divine-purple transition-colors font-medium py-2 flex items-center gap-2"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Settings size={18} />
+              Manage Website
             </Link>
           </div>
         </div>
